@@ -27,8 +27,7 @@ public class AwattarRestClient {
             int responsecode = conn.getResponseCode();
 
             if (responsecode != 200) {
-                throw new RuntimeException("HttpResponseCode: " + responsecode);
-                
+                throw new RuntimeException("HttpResponseCode: " + responsecode);                
             } else {
 
                 String json = "";
