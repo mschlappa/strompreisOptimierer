@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 import com.google.gson.annotations.SerializedName;
 
 public class PreisIntervall {
+
+
 	
 	public PreisIntervall(String start, String ende, BigDecimal preis) {
 		this.start = start;
@@ -47,36 +49,47 @@ public class PreisIntervall {
 		this.ende = ende;
 	}
 
-	/**
-	 * NettoPreis pro kWh in EUR/MWh
-	 */
-	public BigDecimal getPreis() {
-		return preis;
+	public BigDecimal getNettoPreisProMegaWattStundeInEuro() {
+		return preis.setScale(2, RoundingMode.HALF_UP);
 	}
 
-	/**
-	 * BruttoPreis pro kWh in Cent/kWh
-	 */
-	public BigDecimal getBruttoPreisProKilowattstundeInCent() {
-		BigDecimal preisbrutto = getPreis().multiply(new BigDecimal("0.119"));
-		return preisbrutto.setScale(2, RoundingMode.HALF_UP);
+	public BigDecimal getBruttoPreisProMegaWattStundeInEuro() {
+		BigDecimal preis = getNettoPreisProMegaWattStundeInEuro().multiply(new BigDecimal("1.19"));
+		return preis.setScale(2, RoundingMode.HALF_UP);
+	}
+
+	public BigDecimal getBruttoPreisProMegaWattStundeInEuroCap() {
+		
+		if (getBruttoPreisProMegaWattStundeInEuro().compareTo(StrompreisOptimierer.MAXIMALER_PREIS_PRO_KILOWATTSTUNDE) == 1) {
+			return StrompreisOptimierer.MAXIMALER_PREIS_PRO_KILOWATTSTUNDE;
+		}else {
+			return getBruttoPreisProMegaWattStundeInEuro();
+		}
+		
 	}
 
 	public void setPreis(BigDecimal preis) {
 		this.preis = preis;
 	}
 	
+	public int getEnergiemengeZurStunde() {
+		return Lastgang.getEnergiemengeZurStunde(getStartAsTimestamp().getHours());
+	}
 	
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append(getStartAsTimestamp());
-		buf.append(" - ");
+		buf.append("-");
 		buf.append(getEndeAsTimestamp());
 
-		buf.append(" : ");
-		buf.append(getBruttoPreisProKilowattstundeInCent());
+		buf.append(" Preis:");
+		buf.append(getBruttoPreisProMegaWattStundeInEuroCap());
+
+		buf.append(" Energiemenge:");
+		buf.append(getEnergiemengeZurStunde());
+		buf.append(" Wh\n");
 
 		return buf.toString();
 	}
