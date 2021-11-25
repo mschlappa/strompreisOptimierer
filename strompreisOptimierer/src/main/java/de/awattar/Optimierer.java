@@ -25,7 +25,7 @@ public class Optimierer {
 		
 	}
 	
-	public Timestamp getStartzeitpunktZumLaden(int intervallGroesseZumLadenInStunden) {
+	public PreisIntervall getStartzeitpunktZumLaden(int intervallGroesseZumLadenInStunden) {
 
 		int anzahlPreisintervalle = preisintervalle.size();
 		
@@ -56,13 +56,28 @@ public class Optimierer {
 		System.out.println("StartzeitpunktZumLaden:" + startzeitpunkt);
 		System.out.println("Preis im Ladezeitfenster:" + minimum.divide(new BigDecimal(intervallGroesseZumLadenInStunden), 2, RoundingMode.HALF_UP));
 		
-		return startzeitpunkt;
+		PreisIntervall ladeZeitfenster = new PreisIntervall(
+				startzeitpunkt, 
+				new Timestamp(startzeitpunkt.getTime()+(intervallGroesseZumLadenInStunden*60*60*1000)), 
+				null);
+		
+		return ladeZeitfenster;
 	}
 	
-	public boolean istSperrenDerSpeicherEntladungErforderlich(Timestamp jetzt, Timestamp naechsteLadung, int verfuegbareLadungsmenge) {
+	public Aktion istSperrenDerSpeicherEntladungErforderlich(Timestamp jetzt, PreisIntervall ladeZeitfenster, int verfuegbareLadungsmenge) {
 		
-		// Erst mal pruefen ob wir mit der aktuell verfuegbaren Ladungsmenge hinkommen
-		List<PreisIntervall> preisintervalleImZeitraum = getPreisintervalleImZeitraum(jetzt, naechsteLadung, this.preisintervalle);
+		// Pruefen ob wir im Ladezeitfenster sind. Wenn ja, dann Entladung sperren
+		List<PreisIntervall> ladeZeitfensterListe = new ArrayList<>();
+		ladeZeitfensterListe.add(ladeZeitfenster);
+		
+		if (liegtTimestampImIntervall(jetzt, ladeZeitfensterListe)) {
+			System.out.println();
+			return Aktion.SPERREN;
+		}
+		
+		
+		// Pruefen ob wir mit der aktuell verfuegbaren Ladungsmenge hinkommen
+		List<PreisIntervall> preisintervalleImZeitraum = getPreisintervalleImZeitraum(jetzt, ladeZeitfenster.getStartAsTimestamp(), this.preisintervalle);
 		
 		int erforderlicheladungsmenge = 0;
 		
@@ -76,7 +91,12 @@ public class Optimierer {
 		
 		if (erforderlicheladungsmenge < verfuegbareLadungsmenge) {
 			System.out.println("Entladen des Speichers muss nicht gesperrt werden");
-			return false;
+			return Aktion.ENTSPERREN;
+		}
+		
+		if (verfuegbareLadungsmenge <= 0) {
+			System.out.println("Speicher ist leer. Kein Sperren erforderlich");
+			return Aktion.KEINE;
 		}
 		
 		// Die verfuegbare Energiemenge im Speicher reicht nicht bis zum naechsten Ladevorgang
@@ -107,11 +127,11 @@ public class Optimierer {
 		System.out.println("\nPreisintervalleFuerEntladungssperre");
 		System.out.println(preisintervalleFuerEntladungssperre);
 		
-		if (getPreisintervalleImZeitraum(jetzt, jetzt, preisintervalleFuerEntladungssperre).isEmpty()) {
-			return false;
+		if (liegtTimestampImIntervall(jetzt, preisintervalleFuerEntladungssperre)) {
+			return Aktion.SPERREN;
 		}
 		
-		return true;
+		return Aktion.ENTSPERREN;
 		
 		
 	}
@@ -129,6 +149,21 @@ public class Optimierer {
 		}
 		
 		return preisintervalleImIntervall;
+	}
+
+	private boolean liegtTimestampImIntervall(Timestamp pruefZeitpunkt, List<PreisIntervall>preisintervalle) {
+		
+		boolean liegtTimestampImIntervall = false;
+		
+		for (PreisIntervall preisIntervall : preisintervalle) {
+			
+			if (preisIntervall.getStartAsTimestamp().compareTo(pruefZeitpunkt) <= 0 && preisIntervall.getEndeAsTimestamp().compareTo(pruefZeitpunkt) > 0) {
+				liegtTimestampImIntervall = true;
+				break;
+			}
+		}
+	
+		return liegtTimestampImIntervall;
 	}
 	
 }

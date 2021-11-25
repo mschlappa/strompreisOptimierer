@@ -16,7 +16,7 @@ public class AwattarMarketdataClient {
 
 	private static final String URL =  "https://api.awattar.de/v1/marketdata";
 	
-	private static final String FILE =  "marketdata.json";
+	private static final String FILE =  "/home/pi/marketdata";
 	
 	public List<PreisIntervall> getPreisIntervalleViaRestService() {
 		

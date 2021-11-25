@@ -1,8 +1,10 @@
 package de.awattar;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
@@ -32,29 +34,30 @@ public class E3DCSetCommandRunner {
 		boolean isWindows = System.getProperty("os.name")
 				  .toLowerCase().startsWith("windows");
 		
-		String homeDirectory = System.getProperty("user.home");
-		
-		Process process;
+		ProcessBuilder builder = new ProcessBuilder().redirectErrorStream(true);
 		
 		try {
 
-			System.out.println("\nRufe Befehlszeile auf:");
-			
 			if (isWindows) {
-			    process = Runtime.getRuntime().exec(String.format("cmd.exe /c %s", cmd));
+				System.out.println("Befehlszeile Windows:" + cmd);
+			    builder.command("cmd.exe", "/c", cmd);
 			} else {
-			    process = Runtime.getRuntime().exec(String.format("sh -c %s", cmd));
+				System.out.println("Befehlszeile Linux:" + cmd);
+			    builder.command("sh", "-c", cmd);
 			}
 			
+			Process process = builder.start();
 			StreamGobbler streamGobbler =  new StreamGobbler(process.getInputStream(), System.out::println);
-			Executors.newSingleThreadExecutor().submit(streamGobbler);
-			
+			ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.submit(streamGobbler);
 			int exitCode = process.waitFor();
+			System.out.println("exitCode=" + exitCode);
 			assert exitCode == 0;
+			executor.shutdown();
 		
 			
 		} catch(Exception e) {
-			throw new RuntimeException("Fehler beim Aufruf von e3dcset", e);
+			throw new RuntimeException("Fehler beim Aufruf des Befehls:" + cmd, e);
 		}
 
 

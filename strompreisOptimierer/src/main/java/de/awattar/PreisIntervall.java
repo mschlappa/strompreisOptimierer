@@ -8,11 +8,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class PreisIntervall {
 
-
 	
 	public PreisIntervall(String start, String ende, BigDecimal preis) {
 		this.start = start;
 		this.ende = ende;
+		this.preis = preis;
+	}
+	
+	public PreisIntervall(Timestamp start, Timestamp ende, BigDecimal preis) {
+		this.start = String.valueOf(start.getTime());
+		this.ende = String.valueOf(ende.getTime());
 		this.preis = preis;
 	}
 
