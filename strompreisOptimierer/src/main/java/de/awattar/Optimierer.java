@@ -72,7 +72,8 @@ public class Optimierer {
 		
 		if (liegtTimestampImIntervall(jetzt, ladeZeitfensterListe)) {
 			System.out.println();
-			return Aktion.SPERREN;
+			//return Aktion.SPERREN;
+			return Aktion.KEINE; // Sobald fhem die Steuerung abgibt hier wieder auf sperren setzen
 		}
 		
 		
