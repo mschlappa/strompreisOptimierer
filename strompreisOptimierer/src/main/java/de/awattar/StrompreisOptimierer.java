@@ -5,7 +5,7 @@ import java.util.List;
 
 public class StrompreisOptimierer {
 	
-	public static final String WORK_DIR = "./";
+	public static final String WORK_DIR = "/home/pi/";
 	
 	public static void main(String[] args) {
 		
