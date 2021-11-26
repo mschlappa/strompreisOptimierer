@@ -7,8 +7,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class E3DCSetCommandRunner {
 
+	private static final Logger logger = LoggerFactory.getLogger(E3DCSetCommandRunner.class);
+	
 	private static class StreamGobbler implements Runnable {
 	    private InputStream inputStream;
 	    private Consumer<String> consumer;
@@ -38,10 +43,10 @@ public class E3DCSetCommandRunner {
 		try {
 
 			if (isWindows) {
-				System.out.println("Befehlszeile Windows:" + cmd);
+				logger.debug("Befehlszeile Windows:" + cmd);
 			    builder.command("cmd.exe", "/c", cmd);
 			} else {
-				System.out.println("Befehlszeile Linux:" + cmd);
+				logger.debug("Befehlszeile Linux:" + cmd);
 			    builder.command("sh", "-c", cmd);
 			}
 			
@@ -50,7 +55,7 @@ public class E3DCSetCommandRunner {
 			ExecutorService executor = Executors.newSingleThreadExecutor();
 			executor.submit(streamGobbler);
 			int exitCode = process.waitFor();
-			System.out.println("exitCode=" + exitCode);
+			logger.debug("exitCode=" + exitCode);
 			assert exitCode == 0;
 			executor.shutdown();
 		
@@ -64,15 +69,11 @@ public class E3DCSetCommandRunner {
 	}
 
 
-
-
 	public void sperreSpeicherentladung() {
 		execute(PropertiesHelper.getBefehlEntladungSperren());
 	}
 
-
-
-
+	
 	public void erlaubeSpeicherentladung() {
 		execute(PropertiesHelper.getBefehlEntladungEntsperren());		
 	}

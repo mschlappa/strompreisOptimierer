@@ -7,7 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Optimierer {
+
+	private static final Logger logger = LoggerFactory.getLogger(Optimierer.class);
 
 	private List<PreisIntervall> preisintervalle;
 	
@@ -17,10 +22,10 @@ public class Optimierer {
 	
 	public void printPreisintervalle() {
 	
-		System.out.println("Alle Preisintervalle aus der aWATTar API");
+		logger.debug("Alle Preisintervalle aus der aWATTar API");
 		
 		for (PreisIntervall preisIntervall : preisintervalle) {
-			System.out.println(preisIntervall);	
+			logger.debug(preisIntervall.toString());	
 		}
 		
 	}
@@ -32,7 +37,7 @@ public class Optimierer {
 		int anzahlPreisintervalle = preisintervalle.size();
 		
 		if (intervallGroesseZumLadenInStunden > anzahlPreisintervalle) {
-			System.out.println("Intervallgroesse begrenzt auf " + anzahlPreisintervalle);
+			logger.debug("Intervallgroesse begrenzt auf " + anzahlPreisintervalle);
 			intervallGroesseZumLadenInStunden = anzahlPreisintervalle;
 		}
 		
@@ -55,8 +60,8 @@ public class Optimierer {
 			}
 		}
 		
-		System.out.println("StartzeitpunktZumLaden:" + startzeitpunkt);
-		System.out.println("Preis im Ladezeitfenster:" + minimum.divide(new BigDecimal(intervallGroesseZumLadenInStunden), 2, RoundingMode.HALF_UP));
+		logger.info("StartzeitpunktZumLaden:" + startzeitpunkt);
+		logger.info("Preis im Ladezeitfenster:" + minimum.divide(new BigDecimal(intervallGroesseZumLadenInStunden), 2, RoundingMode.HALF_UP));
 		
 		PreisIntervall ladeZeitfenster = new PreisIntervall(
 				startzeitpunkt, 
@@ -73,7 +78,6 @@ public class Optimierer {
 		ladeZeitfensterListe.add(ladeZeitfenster);
 		
 		if (liegtTimestampImIntervall(jetzt, ladeZeitfensterListe)) {
-			System.out.println();
 			//return Aktion.SPERREN;
 			return Aktion.KEINE; // Sobald fhem die Steuerung abgibt hier wieder auf sperren setzen
 		}
@@ -87,18 +91,17 @@ public class Optimierer {
 		for (PreisIntervall preisIntervall : preisintervalleImZeitraum) {
 			erforderlicheladungsmenge = erforderlicheladungsmenge + preisIntervall.getEnergiemengeZurStunde();
 		}
-		System.out.println("\nPruefe istSperrenSpeicherEntladung erforderlich...\n");
-		System.out.println("erforderlicheladungsmenge=" + erforderlicheladungsmenge);
-		System.out.println("verfuegbareLadungsmenge=" + verfuegbareLadungsmenge);
-		System.out.println("");
+		logger.debug("Pruefe istSperrenSpeicherEntladung erforderlich:");
+		logger.debug("erforderlicheladungsmenge=" + erforderlicheladungsmenge);
+		logger.debug("verfuegbareLadungsmenge=" + verfuegbareLadungsmenge);
 		
 		if (erforderlicheladungsmenge < verfuegbareLadungsmenge) {
-			System.out.println("Entladen des Speichers muss nicht gesperrt werden");
+			logger.info("Entladen des Speichers muss nicht gesperrt werden");
 			return Aktion.ENTSPERREN;
 		}
 		
 		if (verfuegbareLadungsmenge <= 0) {
-			System.out.println("Speicher ist leer. Kein Sperren erforderlich");
+			logger.info("Speicher ist leer. Kein Sperren erforderlich");
 			return Aktion.KEINE;
 		}
 		
@@ -108,8 +111,8 @@ public class Optimierer {
 		PreisIntervallComparator comparator = new PreisIntervallComparator();
 		Collections.sort(preisintervalleImZeitraum, comparator);
 		
-		System.out.println("Alle Preisintervalle im Zeitraum jetzt bis zum naechsten Laden (sortiert nach Preis):");
-		System.out.println(preisintervalleImZeitraum);
+		logger.debug("Alle Preisintervalle im Zeitraum jetzt bis zum naechsten Laden (sortiert nach Preis):");
+		logger.debug(preisintervalleImZeitraum.toString());
 			
 		int einzusparendeLadungsmenge = erforderlicheladungsmenge - verfuegbareLadungsmenge;
 		
@@ -127,8 +130,8 @@ public class Optimierer {
 			}
 		}
 		
-		System.out.println("\nPreisintervalleFuerEntladungssperre");
-		System.out.println(preisintervalleFuerEntladungssperre);
+		logger.info("Preisintervalle in denen Netzstrom bezogen wird:");
+		logger.info(preisintervalleFuerEntladungssperre.toString());
 		
 		if (liegtTimestampImIntervall(jetzt, preisintervalleFuerEntladungssperre)) {
 			return Aktion.SPERREN;

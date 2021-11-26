@@ -87,6 +87,8 @@ public class PreisIntervall {
 		
 		StringBuffer buf = new StringBuffer();
 		
+		buf.append("\n");
+		
 		buf.append(getStartAsTimestamp());
 		buf.append("-");
 		buf.append(getEndeAsTimestamp());
@@ -96,8 +98,8 @@ public class PreisIntervall {
 
 		buf.append(" Energiemenge:");
 		buf.append(getEnergiemengeZurStunde());
-		buf.append(" Wh\n");
-
+		buf.append(" Wh");		
+		
 		return buf.toString();
 	}
 	
