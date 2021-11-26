@@ -10,7 +10,7 @@ public class StrompreisOptimierer {
 	
 	private static final Logger logger = LoggerFactory.getLogger(StrompreisOptimierer.class);
 	
-	public static final String WORK_DIR = "./";
+	public static final String WORK_DIR = "/home/pi/";
 	
 	public static void main(String[] args) {
 		
