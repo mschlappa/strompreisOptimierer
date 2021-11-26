@@ -25,8 +25,10 @@ public class Optimierer {
 		
 	}
 	
-	public PreisIntervall getStartzeitpunktZumLaden(int intervallGroesseZumLadenInStunden) {
+	public PreisIntervall getStartzeitpunktZumLaden() {
 
+		int intervallGroesseZumLadenInStunden = PropertiesHelper.getIntervallgroesseZumLadenInStunden();
+		
 		int anzahlPreisintervalle = preisintervalle.size();
 		
 		if (intervallGroesseZumLadenInStunden > anzahlPreisintervalle) {
@@ -138,7 +140,7 @@ public class Optimierer {
 	}
 	
 	
-	private List<PreisIntervall> getPreisintervalleImZeitraum(Timestamp beginn, Timestamp ende, List<PreisIntervall> preisintervalle){
+	List<PreisIntervall> getPreisintervalleImZeitraum(Timestamp beginn, Timestamp ende, List<PreisIntervall> preisintervalle){
 		
 		List<PreisIntervall> preisintervalleImIntervall = new ArrayList<>();
 		
@@ -152,7 +154,7 @@ public class Optimierer {
 		return preisintervalleImIntervall;
 	}
 
-	private boolean liegtTimestampImIntervall(Timestamp pruefZeitpunkt, List<PreisIntervall>preisintervalle) {
+	boolean liegtTimestampImIntervall(Timestamp pruefZeitpunkt, List<PreisIntervall>preisintervalle) {
 		
 		boolean liegtTimestampImIntervall = false;
 		

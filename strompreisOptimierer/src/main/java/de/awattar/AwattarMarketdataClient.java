@@ -14,68 +14,68 @@ import com.google.gson.JsonParser;
 
 public class AwattarMarketdataClient {
 
-	private static final String URL =  "https://api.awattar.de/v1/marketdata";
-	
-	private static final String FILE =  "/home/pi/marketdata";
-	
-	public List<PreisIntervall> getPreisIntervalleViaRestService() {
-		
-        try {
+	private static final String FILE = StrompreisOptimierer.WORK_DIR + "marketdata";
 
-            URL url = new URL(URL);
+	private List<PreisIntervall> getPreisIntervalleViaRestService() {
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
+		try {
 
-            int responsecode = conn.getResponseCode();
+			URL url = new URL(PropertiesHelper.getAwattarApiURL());
 
-            if (responsecode != 200) {
-                throw new RuntimeException("HttpResponseCode: " + responsecode);                
-            } else {
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.connect();
 
-                Scanner scanner = new Scanner(url.openStream());
+			int responsecode = conn.getResponseCode();
 
-                return konvertiereJsonNachObjekt(scanner);
-            }
+			if (responsecode != 200) {
+				throw new RuntimeException("HttpResponseCode: " + responsecode);
+			} else {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        } 
+				Scanner scanner = new Scanner(url.openStream());
+
+				return konvertiereJsonNachObjekt(scanner);
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException("Preisintervalle konnten nicht via Rest eingelesen werden", e);
+		}
 	}
-	
-	
-	public List<PreisIntervall> getPreisIntervalleViaDatei() {
+
+	private List<PreisIntervall> getPreisIntervalleViaDatei() {
 
 		try {
 			return konvertiereJsonNachObjekt(new Scanner(new File(FILE)));
-			
+
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Preisintervalle konnten nicht via Datei eingelesen werden", e);
 		}
 
-		
+	}
 
-	}	
-		
-	private List<PreisIntervall> konvertiereJsonNachObjekt(Scanner scanner){
-		
+	private List<PreisIntervall> konvertiereJsonNachObjekt(Scanner scanner) {
+
 		String json = "";
-		
-		 while (scanner.hasNext()) {
-             json += scanner.nextLine();
-         }
 
-		 scanner.close();
+		while (scanner.hasNext()) {
+			json += scanner.nextLine();
+		}
 
+		scanner.close();
 
-        json = JsonParser.parseString(json).getAsJsonObject().get("data").getAsJsonArray().toString();
-        
-        Gson gson = new GsonBuilder().create();
-        
-        return Arrays.asList(gson.fromJson(json, PreisIntervall[].class));
+		json = JsonParser.parseString(json).getAsJsonObject().get("data").getAsJsonArray().toString();
 
-		
+		Gson gson = new GsonBuilder().create();
+
+		return Arrays.asList(gson.fromJson(json, PreisIntervall[].class));
+
+	}
+
+	public List<PreisIntervall> getPreisIntervalle() {
+
+		if (PropertiesHelper.getPreisIntervalleViaDateiEinlesen()) {
+			return getPreisIntervalleViaDatei();
+		}
+		return getPreisIntervalleViaRestService();
 	}
 }

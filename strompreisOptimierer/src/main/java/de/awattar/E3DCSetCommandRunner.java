@@ -1,7 +1,6 @@
 package de.awattar;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
@@ -68,14 +67,14 @@ public class E3DCSetCommandRunner {
 
 
 	public void sperreSpeicherentladung() {
-		execute(StrompreisOptimierer.cmdSperreSpeicherentladung);
+		execute(PropertiesHelper.getBefehlEntladungSperren());
 	}
 
 
 
 
 	public void erlaubeSpeicherentladung() {
-		execute(StrompreisOptimierer.cmdErlaubeSpeicherentladung);		
+		execute(PropertiesHelper.getBefehlEntladungEntsperren());		
 	}
 	
 }

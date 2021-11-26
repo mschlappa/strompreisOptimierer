@@ -1,42 +1,32 @@
 package de.awattar;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 public class Lastgang {
 
-	private Lastgang() {	
+	Properties properties = new Properties();
+
+	private static Lastgang instanz = new Lastgang();
+
+	private Lastgang() {
+		loadProperties();
 	}
-	
-	/**
-	 * Anahme der Energiemenge die in der Stunde im Haus verbraucht wird (in Wh)
-	 */
-	private static final int[] LASTGANG = {
-			500, // 0
-			500, // 1
-			500, // 2
-			500, // 3
-			500, // 4
-			500, // 5
-			646, // 6
-			540, // 7
-			426, // 8
-			246, // 9
-			107, // 10
-			21, // 11
-			185, // 12
-			286, // 13
-			246, // 14
-			132, // 15
-			173, // 16
-			329, // 17
-			401, // 18
-			431, // 19
-			360, // 20
-			468, // 21
-			468, // 22
-			499, // 23			
-			};
-	
+
+	private void loadProperties() {
+
+		String dateiPfad = StrompreisOptimierer.WORK_DIR + "lastgang.properties";
+
+		try {
+			properties.load(new FileInputStream(dateiPfad));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static int getEnergiemengeZurStunde(int stunde) {
-		return LASTGANG[stunde];
+		return Integer.valueOf(instanz.properties.getProperty(Integer.toString(stunde))).intValue();
 	}
-	
+
 }

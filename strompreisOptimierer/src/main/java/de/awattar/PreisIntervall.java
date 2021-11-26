@@ -65,8 +65,10 @@ public class PreisIntervall {
 
 	public BigDecimal getBruttoPreisProMegaWattStundeInEuroCap() {
 		
-		if (getBruttoPreisProMegaWattStundeInEuro().compareTo(StrompreisOptimierer.MAXIMALER_PREIS_PRO_KILOWATTSTUNDE) == 1) {
-			return StrompreisOptimierer.MAXIMALER_PREIS_PRO_KILOWATTSTUNDE;
+		BigDecimal maxPreis = PropertiesHelper.getMaxPreisProKilowattStunde();
+		
+		if (getBruttoPreisProMegaWattStundeInEuro().compareTo(maxPreis) == 1) {
+			return maxPreis;
 		}else {
 			return getBruttoPreisProMegaWattStundeInEuro();
 		}
