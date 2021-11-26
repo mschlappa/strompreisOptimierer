@@ -4,13 +4,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class StrompreisOptimierer {
-
-	//public static final Timestamp pruefZeitpunkt = Timestamp.valueOf("2021-11-25 20:00:00.0"); 
-	public static final Timestamp pruefZeitpunkt = new Timestamp(System.currentTimeMillis());
 	
-	public static final String WORK_DIR = "/home/pi/";
+	public static final String WORK_DIR = "./";
 	
 	public static void main(String[] args) {
+		
+		Timestamp pruefZeitpunkt = PropertiesHelper.getPruefzeitpunkt();
 		
 		System.out.println("\n+++ Starte StrompreisOptimierung um " + pruefZeitpunkt + " +++");
 		

@@ -3,6 +3,7 @@ package de.awattar;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 
@@ -57,6 +58,17 @@ public class PropertiesHelper {
 
 	public static String getAwattarApiURL() {
 		return instanz.properties.getProperty("AWATTAR_API_URL");
+	}
+	
+	public static Timestamp getPruefzeitpunkt() {
+		
+		String pruefzeitpunkt = instanz.properties.getProperty("VORGABE_PRUEF_ZEITPUNKT");
+		
+		if (pruefzeitpunkt == null) {
+			return new Timestamp(System.currentTimeMillis());
+		}
+		return Timestamp.valueOf(pruefzeitpunkt);
+		
 	}
 	
 }

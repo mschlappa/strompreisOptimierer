@@ -1,6 +1,7 @@
 package de.awattar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 
@@ -17,6 +18,7 @@ class PropertiesHelperTest {
 		assertEquals(PropertiesHelper.getMaxPreisProKilowattStunde(), new BigDecimal("400.00"));
 		assertEquals(PropertiesHelper.getPreisIntervalleViaDateiEinlesen(), false);
 		assertEquals(PropertiesHelper.getAwattarApiURL(), "https://api.awattar.de/v1/marketdata");
+		assertNotNull(PropertiesHelper.getPruefzeitpunkt());
 	}
 
 }
