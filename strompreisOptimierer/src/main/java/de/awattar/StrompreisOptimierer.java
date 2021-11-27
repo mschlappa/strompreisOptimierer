@@ -2,33 +2,43 @@ package de.awattar;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.beust.jcommander.JCommander;
+
 public class StrompreisOptimierer {
 	
-	private static final Logger logger = LoggerFactory.getLogger(StrompreisOptimierer.class);
-	
-	public static final String WORK_DIR = "./";
+	public static String WORK_DIR;
 	
 	public static void main(String[] args) {
+		
+		KommandozeilenArgumente argumente = new KommandozeilenArgumente();
+		
+		JCommander.newBuilder()
+		  .addObject(argumente)
+		  .build()
+		  .parse(args);
+		
+		StrompreisOptimierer.WORK_DIR = argumente.getWorkdir();
+		
+		if (argumente.isDebug()) {
+			System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+		}
+		
+		final Logger logger = LoggerFactory.getLogger(StrompreisOptimierer.class);
 		
 		Timestamp pruefZeitpunkt = PropertiesHelper.getPruefzeitpunkt();
 		
 		logger.info("+++ Starte StrompreisOptimierung um " + pruefZeitpunkt + " +++");
 		
-		if (args.length != 1) {
-			logger.error("Parameter SOC fehlt");
-			System.exit(1);
-		}
-		
-		double soc = Double.valueOf(args[0]);
-		logger.debug("SOC=" + soc);
+		logger.debug("SOC=" + argumente.getSoc());
 		
 		int speicherKapazitaet_Wh = PropertiesHelper.getAkkuKapazitaet();
 		int notstromreserve_Wh = PropertiesHelper.getNotstromreserve();
-		int verfuegbareLadungsmenge = (int)( speicherKapazitaet_Wh  * (soc / 100) - notstromreserve_Wh);
+		int verfuegbareLadungsmenge = (int)( speicherKapazitaet_Wh  * (argumente.getSoc() / 100) - notstromreserve_Wh);
 		
 		logger.debug("verfuegbareLadungsmenge=" + verfuegbareLadungsmenge);
 		
