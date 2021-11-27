@@ -88,13 +88,25 @@ public class PreisIntervall {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("\n");
-		
-		buf.append(getStartAsTimestamp());
+
+		if (getStart() != null) {
+			buf.append(getStartAsTimestamp());				
+		}else {
+			buf.append("LEER");
+		}
 		buf.append("-");
-		buf.append(getEndeAsTimestamp());
+		if (getEnde() != null) {
+			buf.append(getEndeAsTimestamp());				
+		}else {
+			buf.append("LEER");
+		}
 
 		buf.append(" Preis:");
-		buf.append(getBruttoPreisProMegaWattStundeInEuroCap());
+		if (getBruttoPreisProMegaWattStundeInEuroCap() != null) {
+			buf.append(getBruttoPreisProMegaWattStundeInEuroCap());				
+		}else {
+			buf.append("LEER");
+		}
 
 		buf.append(" Energiemenge:");
 		buf.append(getEnergiemengeZurStunde());
