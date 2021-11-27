@@ -36,13 +36,13 @@ public class StrompreisOptimierer {
 		Timestamp pruefZeitpunkt = PropertiesHelper.getPruefzeitpunkt();
 		
 		logger.info("+++ Starte StrompreisOptimierung um " + pruefZeitpunkt + " +++");
-		
-		logger.debug("SOC=" + argumente.getSoc());
-		
+				
 		int speicherKapazitaet_Wh = PropertiesHelper.getAkkuKapazitaet();
 		int notstromreserve_Wh = PropertiesHelper.getNotstromreserve();
-		int verfuegbareLadungsmenge = (int)( speicherKapazitaet_Wh  * (argumente.getSoc() / 100) - notstromreserve_Wh);
+		int soc = argumente.getSoc();
+		int verfuegbareLadungsmenge = (int)( speicherKapazitaet_Wh  * (soc / 100d) - notstromreserve_Wh);
 		
+		logger.debug("SOC=" + argumente.getSoc());
 		logger.debug("verfuegbareLadungsmenge=" + verfuegbareLadungsmenge);
 		
 		List<PreisIntervall> preisIntervalle = new AwattarMarketdataClient().getPreisIntervalle();
