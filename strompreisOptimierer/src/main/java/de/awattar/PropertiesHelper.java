@@ -9,17 +9,18 @@ import java.util.Properties;
 
 public class PropertiesHelper {
 
-	Properties properties = new Properties();
+	private static Properties properties = new Properties();
 	
 	private static PropertiesHelper instanz = new PropertiesHelper();
 	
+	private static String workDir = StrompreisOptimierer.WORK_DIR;
+	
 	private PropertiesHelper() {
-		loadProperties();
 	}
 
-	private void loadProperties() {
+	public static void init() {
 		
-		String dateiPfad = StrompreisOptimierer.WORK_DIR + "strompreisOptimierer.properties";
+		String dateiPfad = getWorkDir() + "strompreisOptimierer.properties";
 		
 		try {
 			properties.load(new FileInputStream(dateiPfad));
@@ -69,6 +70,14 @@ public class PropertiesHelper {
 		}
 		return Timestamp.valueOf(pruefzeitpunkt);
 		
+	}
+
+	public static String getWorkDir() {
+		return workDir;
+	}
+
+	public static void setWorkDir(String workDir) {
+		PropertiesHelper.workDir = workDir;
 	}
 	
 }

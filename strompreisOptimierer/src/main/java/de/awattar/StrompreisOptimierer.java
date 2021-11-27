@@ -30,6 +30,9 @@ public class StrompreisOptimierer {
 		
 		final Logger logger = LoggerFactory.getLogger(StrompreisOptimierer.class);
 		
+		PropertiesHelper.init();
+		Lastgang.init();		
+		
 		Timestamp pruefZeitpunkt = PropertiesHelper.getPruefzeitpunkt();
 		
 		logger.info("+++ Starte StrompreisOptimierung um " + pruefZeitpunkt + " +++");

@@ -12,6 +12,9 @@ class PropertiesHelperTest {
 	@Test
 	void test() {
 
+		PropertiesHelper.setWorkDir("./");
+		PropertiesHelper.init();
+		
 		assertEquals(PropertiesHelper.getAkkuKapazitaet(), 10000);
 		assertEquals(PropertiesHelper.getNotstromreserve(), 1000);
 		assertEquals(PropertiesHelper.getIntervallgroesseZumLadenInStunden(), 3);

@@ -8,7 +8,10 @@ class LastgangTest {
 
 	@Test
 	void test() {
-		
+
+		Lastgang.setWorkDir("./");
+		Lastgang.init();
+
 		assertEquals(107, Lastgang.getEnergiemengeZurStunde(10));
 	}
 

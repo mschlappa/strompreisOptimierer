@@ -6,17 +6,18 @@ import java.util.Properties;
 
 public class Lastgang {
 
-	Properties properties = new Properties();
+	private static Properties properties = new Properties();
 
 	private static Lastgang instanz = new Lastgang();
 
+	private static String workDir = StrompreisOptimierer.WORK_DIR;
+	
 	private Lastgang() {
-		loadProperties();
 	}
 
-	private void loadProperties() {
+	public static void init() {
 
-		String dateiPfad = StrompreisOptimierer.WORK_DIR + "lastgang.properties";
+		String dateiPfad = getWorkDir() + "lastgang.properties";
 
 		try {
 			properties.load(new FileInputStream(dateiPfad));
@@ -27,6 +28,14 @@ public class Lastgang {
 
 	public static int getEnergiemengeZurStunde(int stunde) {
 		return Integer.valueOf(instanz.properties.getProperty(Integer.toString(stunde))).intValue();
+	}
+
+	public static String getWorkDir() {
+		return workDir;
+	}
+
+	public static void setWorkDir(String workDir) {
+		Lastgang.workDir = workDir;
 	}
 
 }
