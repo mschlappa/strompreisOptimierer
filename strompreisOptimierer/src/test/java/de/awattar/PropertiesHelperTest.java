@@ -16,7 +16,7 @@ class PropertiesHelperTest {
 		assertEquals(PropertiesHelper.getNotstromreserve(), 1000);
 		assertEquals(PropertiesHelper.getIntervallgroesseZumLadenInStunden(), 3);
 		assertEquals(PropertiesHelper.getMaxPreisProKilowattStunde(), new BigDecimal("400.00"));
-		assertEquals(PropertiesHelper.getPreisIntervalleViaDateiEinlesen(), false);
+		assertEquals(PropertiesHelper.getPreisIntervalleViaDateiEinlesen(), true);
 		assertEquals(PropertiesHelper.getAwattarApiURL(), "https://api.awattar.de/v1/marketdata");
 		assertNotNull(PropertiesHelper.getPruefzeitpunkt());
 	}
