@@ -22,7 +22,7 @@ public class Optimierer {
 	
 	public void printPreisintervalle() {
 	
-		logger.debug("Alle Preisintervalle aus der aWATTar API");
+		logger.debug("Alle Preisintervalle aus der aWATTar API nach dem Pruefzeitpunkt");
 		
 		for (PreisIntervall preisIntervall : preisintervalle) {
 			logger.debug(preisIntervall.toString());	
@@ -35,6 +35,11 @@ public class Optimierer {
 		int intervallGroesseZumLadenInStunden = PropertiesHelper.getIntervallgroesseZumLadenInStunden();
 		
 		int anzahlPreisintervalle = preisintervalle.size();
+		
+		if (anzahlPreisintervalle == 0) {
+			logger.debug("Anzahl PreisIntervalle ist 0");
+			return null;
+		}
 		
 		if (intervallGroesseZumLadenInStunden > anzahlPreisintervalle) {
 			logger.debug("Intervallgroesse begrenzt auf " + anzahlPreisintervalle);
@@ -76,6 +81,11 @@ public class Optimierer {
 		// Pruefen ob wir im Ladezeitfenster sind. Wenn ja, dann Entladung sperren
 		List<PreisIntervall> ladeZeitfensterListe = new ArrayList<>();
 		ladeZeitfensterListe.add(ladeZeitfenster);
+		
+		if (ladeZeitfenster == null) {
+			logger.debug("Keine PreisItervalle => keine Aktion!");
+			return Aktion.KEINE;
+		}
 		
 		if (liegtTimestampImIntervall(jetzt, ladeZeitfensterListe)) {
 			//return Aktion.SPERREN;

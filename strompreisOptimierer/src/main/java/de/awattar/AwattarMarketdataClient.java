@@ -4,15 +4,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 
 public class AwattarMarketdataClient {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AwattarMarketdataClient.class);
 
 	private static final String FILE = StrompreisOptimierer.WORK_DIR + "marketdata";
 
@@ -73,9 +79,27 @@ public class AwattarMarketdataClient {
 
 	public List<PreisIntervall> getPreisIntervalle() {
 
+		 List<PreisIntervall> liste = new ArrayList<>();
+		 List<PreisIntervall> listeOhneAbgelaufene = new ArrayList<>();
+		
 		if (PropertiesHelper.getPreisIntervalleViaDateiEinlesen()) {
-			return getPreisIntervalleViaDatei();
+			logger.debug("Lese Preisintervalle ueber Datei ein");
+			liste = getPreisIntervalleViaDatei();
+		} else {
+			logger.debug("Lese Preisintervalle ueber Rest-Service ein");
+			liste = getPreisIntervalleViaRestService();	
 		}
-		return getPreisIntervalleViaRestService();
+
+		// Alle Eintraege entfernen, die nach dem Pruefzeitpunkt liegen
+		for (PreisIntervall preisIntervall : liste) {
+			
+			if (preisIntervall.getEndeAsTimestamp().compareTo(PropertiesHelper.getPruefzeitpunkt()) > 0) {
+				listeOhneAbgelaufene.add(preisIntervall);
+			}
+			
+		}
+		
+		return listeOhneAbgelaufene;
+		
 	}
 }

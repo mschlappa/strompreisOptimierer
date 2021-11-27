@@ -35,7 +35,7 @@ public class StrompreisOptimierer {
 		List<PreisIntervall> preisIntervalle = new AwattarMarketdataClient().getPreisIntervalle();
 		Optimierer optimierer = new Optimierer(preisIntervalle);
 		
-		//optimierer.printPreisintervalle();
+		optimierer.printPreisintervalle();
 		
 		PreisIntervall ladeZeitfenster = optimierer.getStartzeitpunktZumLaden();
 		
