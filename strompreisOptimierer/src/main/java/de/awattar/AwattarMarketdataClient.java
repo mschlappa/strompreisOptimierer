@@ -80,7 +80,6 @@ public class AwattarMarketdataClient {
 	public List<PreisIntervall> getPreisIntervalle() {
 
 		 List<PreisIntervall> liste = new ArrayList<>();
-		 List<PreisIntervall> listeOhneAbgelaufene = new ArrayList<>();
 		
 		if (PropertiesHelper.getPreisIntervalleViaDateiEinlesen()) {
 			logger.debug("Lese Preisintervalle ueber Datei ein");
@@ -90,16 +89,7 @@ public class AwattarMarketdataClient {
 			liste = getPreisIntervalleViaRestService();	
 		}
 
-		// Alle Eintraege entfernen, die nach dem Pruefzeitpunkt liegen
-		for (PreisIntervall preisIntervall : liste) {
-			
-			if (preisIntervall.getEndeAsTimestamp().compareTo(PropertiesHelper.getPruefzeitpunkt()) > 0) {
-				listeOhneAbgelaufene.add(preisIntervall);
-			}
-			
-		}
-		
-		return listeOhneAbgelaufene;
+		return liste;
 		
 	}
 }
