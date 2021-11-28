@@ -14,6 +14,12 @@ public class E3DCSetCommandRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(E3DCSetCommandRunner.class);
 	
+	private boolean isDryRun;
+	
+	public E3DCSetCommandRunner(boolean isDryRun) {
+		this.isDryRun = isDryRun;
+	}
+	
 	private static class StreamGobbler implements Runnable {
 	    private InputStream inputStream;
 	    private Consumer<String> consumer;
@@ -37,6 +43,10 @@ public class E3DCSetCommandRunner {
 
 		boolean isWindows = System.getProperty("os.name")
 				  .toLowerCase().startsWith("windows");
+
+		if (this.isDryRun) {
+			cmd = "echo " + cmd;
+		}
 		
 		ProcessBuilder builder = new ProcessBuilder().redirectErrorStream(true);
 		

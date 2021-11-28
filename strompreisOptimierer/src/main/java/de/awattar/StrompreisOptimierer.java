@@ -56,7 +56,7 @@ public class StrompreisOptimierer {
 		
 		logger.info("Zum Zeitpunkt " + pruefZeitpunkt + " Aktion=" + aktion);
 		
-		E3DCSetCommandRunner runner = new E3DCSetCommandRunner();
+		E3DCSetCommandRunner runner = new E3DCSetCommandRunner(argumente.isDryRun());
 		
 		switch(aktion) {
 		

@@ -19,6 +19,9 @@ public class KommandozeilenArgumente {
 	@Parameter(names = "-debug", description = "Detaillierter Loglevel")
 	private boolean debug = false;
 	
+	@Parameter(names = "-dry", description = "Befehl zur Speichersteuerung wird nur auf Konsole ausgegeben")
+	private boolean dryRun = false;
+	
 	public int getSoc() {
 		return soc;
 	}
@@ -31,5 +34,9 @@ public class KommandozeilenArgumente {
 		return debug;
 	}
 
+	public boolean isDryRun() {
+		return dryRun;
+	}
 
+	
 }
