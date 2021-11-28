@@ -10,13 +10,13 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class E3DCSetCommandRunner {
+public class StorageCommandRunner {
 
-	private static final Logger logger = LoggerFactory.getLogger(E3DCSetCommandRunner.class);
+	private static final Logger logger = LoggerFactory.getLogger(StorageCommandRunner.class);
 	
 	private boolean isDryRun;
 	
-	public E3DCSetCommandRunner(boolean isDryRun) {
+	public StorageCommandRunner(boolean isDryRun) {
 		this.isDryRun = isDryRun;
 	}
 	
