@@ -2,12 +2,12 @@ package de.awattar;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 public class StrompreisOptimierer {
 	
@@ -16,11 +16,19 @@ public class StrompreisOptimierer {
 	public static void main(String[] args) {
 		
 		KommandozeilenArgumente argumente = new KommandozeilenArgumente();
+		JCommander cmd = JCommander.newBuilder().addObject(argumente).build();
 		
-		JCommander.newBuilder()
-		  .addObject(argumente)
-		  .build()
-		  .parse(args);
+		try {
+			cmd.parse(args);
+		} catch (ParameterException e) {
+			cmd.usage();
+			return;
+		}
+		
+		if (argumente.isHelp()) {
+			cmd.usage();
+			return;
+		}
 		
 		StrompreisOptimierer.WORK_DIR = argumente.getWorkdir();
 		
