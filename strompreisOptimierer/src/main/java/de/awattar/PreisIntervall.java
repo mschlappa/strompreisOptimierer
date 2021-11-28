@@ -30,7 +30,7 @@ public class PreisIntervall {
 	@SerializedName("marketprice")
 	private BigDecimal preis;
 
-	private int energiemengeZurStunde = -1;
+	private int energiemengeZurStunde;
 	
 	public String getStart() {
 		return start;
@@ -83,7 +83,7 @@ public class PreisIntervall {
 	
 	public int getEnergiemengeZurStunde() {
 		
-		if (this.energiemengeZurStunde != -1) {
+		if (this.energiemengeZurStunde != 0) {
 			return this.energiemengeZurStunde;
 		}
 		return Lastgang.getEnergiemengeZurStunde(getStartAsTimestamp().getHours());
