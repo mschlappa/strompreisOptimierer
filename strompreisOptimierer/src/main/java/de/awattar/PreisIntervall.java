@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class PreisIntervall {
 
-	
+		
 	public PreisIntervall(String start, String ende, BigDecimal preis) {
 		this.start = start;
 		this.ende = ende;
@@ -30,6 +30,8 @@ public class PreisIntervall {
 	@SerializedName("marketprice")
 	private BigDecimal preis;
 
+	private int energiemengeZurStunde = -1;
+	
 	public String getStart() {
 		return start;
 	}
@@ -80,6 +82,10 @@ public class PreisIntervall {
 	}
 	
 	public int getEnergiemengeZurStunde() {
+		
+		if (this.energiemengeZurStunde != -1) {
+			return this.energiemengeZurStunde;
+		}
 		return Lastgang.getEnergiemengeZurStunde(getStartAsTimestamp().getHours());
 	}
 	
@@ -113,6 +119,10 @@ public class PreisIntervall {
 		buf.append(" Wh");		
 		
 		return buf.toString();
+	}
+
+	public void setEnergiemengeZurStunde(int energiemengeZurStunde) {
+		this.energiemengeZurStunde = energiemengeZurStunde;
 	}
 	
 }
