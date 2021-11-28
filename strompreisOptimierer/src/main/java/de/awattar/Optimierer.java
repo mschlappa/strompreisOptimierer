@@ -22,7 +22,7 @@ public class Optimierer {
 	
 	public void printPreisintervalle() {
 	
-		logger.debug("Alle Preisintervalle aus der aWATTar API nach dem Pruefzeitpunkt");
+		logger.debug("Alle Preisintervalle aus der aWATTar API");
 		
 		for (PreisIntervall preisIntervall : preisintervalle) {
 			logger.debug(preisIntervall.toString());	
