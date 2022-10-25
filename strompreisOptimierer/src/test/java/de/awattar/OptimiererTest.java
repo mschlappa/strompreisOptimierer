@@ -65,6 +65,24 @@ class OptimiererTest {
 		assertTrue(liegtImIntervall == false);
 	}
 
+	@Test
+	void testgetPreisintervalleImZeitraum() {
+		
+		Optimierer optimierer = new Optimierer(null);
+		
+		Timestamp jetzt = Timestamp.valueOf("2021-12-01 00:01:00.0");
+		Timestamp ende = Timestamp.valueOf("2021-12-01 01:00:00.0");
+		
+		List<PreisIntervall> preisintervalle = new ArrayList<>();
+		
+		PreisIntervall pi1 = new PreisIntervall(Timestamp.valueOf("2021-12-01 00:00:00.0"), Timestamp.valueOf("2021-12-01 01:00:00.0"), new BigDecimal("100.00"));
+		
+		preisintervalle.add(pi1);
+		
+		List<PreisIntervall> ergebnis = optimierer.getPreisintervalleImZeitraum(jetzt, ende, preisintervalle);
+		
+		assertTrue(!ergebnis.isEmpty());
+	}
 
 	@Test
 	void testIstSperrenDerSpeicherEntladungErforderlich_Aktion_SPERREN() {
@@ -91,7 +109,7 @@ class OptimiererTest {
 		
 		Optimierer optimierer = new Optimierer(allePreisIntervalle);
 
-		Aktion aktion =  optimierer.istSperrenDerSpeicherEntladungErforderlich(Timestamp.valueOf("2021-12-01 00:00:00.0"), pi4, 150);
+		Aktion aktion =  optimierer.istSperrenDerSpeicherEntladungErforderlich(Timestamp.valueOf("2021-12-01 00:01:00.0"), pi4, 150);
 		
 		assertEquals(Aktion.SPERREN, aktion);
 	}

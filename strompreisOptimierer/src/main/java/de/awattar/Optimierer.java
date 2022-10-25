@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -67,6 +69,20 @@ public class Optimierer {
 		
 		logger.info("StartzeitpunktZumLaden:" + startzeitpunkt);
 		logger.info("Preis im Ladezeitfenster:" + minimum.divide(new BigDecimal(intervallGroesseZumLadenInStunden), 2, RoundingMode.HALF_UP));
+
+		Timestamp p = PropertiesHelper.getPruefzeitpunkt();
+		
+		if (p.after(startzeitpunkt)) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(p.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			startzeitpunkt = new Timestamp(cal.getTimeInMillis());
+			logger.info("StartZP liegt in Vergangenheit. Anpassung auf:" + startzeitpunkt);
+		}
 		
 		PreisIntervall ladeZeitfenster = new PreisIntervall(
 				startzeitpunkt, 
@@ -158,7 +174,11 @@ public class Optimierer {
 		List<PreisIntervall> preisintervalleImIntervall = new ArrayList<>();
 		
 		for (PreisIntervall preisIntervall : preisintervalle) {
-			if (preisIntervall.getStartAsTimestamp().compareTo(beginn) >= 0 && preisIntervall.getEndeAsTimestamp().compareTo(ende) <= 0) {
+		
+			if ((preisIntervall.getStartAsTimestamp().compareTo(beginn) >= 0 
+					&& preisIntervall.getEndeAsTimestamp().compareTo(ende) <= 0)
+					|| (preisIntervall.getStartAsTimestamp().compareTo(beginn) < 0
+							&& preisIntervall.getEndeAsTimestamp().compareTo(beginn) > 0)) {
 				
 				preisintervalleImIntervall.add(preisIntervall);
 			}
